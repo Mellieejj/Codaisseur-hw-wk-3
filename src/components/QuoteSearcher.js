@@ -7,21 +7,22 @@ export default class QuoteSearcher extends Component {
     fetching: true,
     search: ""
   };
-  componentDidMount() {
-    fetch(`https://quote-garden.herokuapp.com/quotes/search/tree`)
-      .then(response => response.json())
-      .then(data => {
-        console.log("fetching data", data);
-        const quotesTree = data.results.map(quote => quote);
-        this.setState({
-          quotes: quotesTree,
-          fetching: false,
-          liked: 0,
-          disliked: 0
-        });
-      })
-      .catch(console.error);
-  }
+
+  // componentDidMount() {
+  //   fetch(`https://quote-garden.herokuapp.com/quotes/search/tree`)
+  //     .then(response => response.json())
+  //     .then(data => {
+  //       console.log("fetching data", data);
+  //       const quotesTree = data.results.map(quote => quote);
+  //       this.setState({
+  //         quotes: quotesTree,
+  //         fetching: false,
+  //         liked: 0,
+  //         disliked: 0
+  //       });
+  //     })
+  //     .catch(console.error);
+  // }
 
   search = () => {
     fetch(
@@ -31,6 +32,8 @@ export default class QuoteSearcher extends Component {
       .then(data => {
         console.log("fetching data", data);
         const quotesTree = data.results.map(quote => quote);
+        // console.log(quotesTree);
+
         this.setState({
           quotes: quotesTree,
           fetching: false,
@@ -50,6 +53,7 @@ export default class QuoteSearcher extends Component {
         key={quote._id}
         quoteText={quote.quoteText}
         quoteAuthor={quote.quoteAuthor}
+        like={quote.like}
       />
     );
   };
@@ -70,6 +74,7 @@ export default class QuoteSearcher extends Component {
     return (
       <div className="quotes">
         <h1>Quotes ! </h1>
+
         <div className="searchBar">
           <form onSubmit={this.handleSubmit}>
             <input
@@ -82,14 +87,18 @@ export default class QuoteSearcher extends Component {
             <button onClick={this.search}>Search</button>
           </form>
         </div>
-        <div>
-          <h2 className="likeDislikeCounting">
-            Like: {this.state.liked} / Dislike : {this.state.disliked}
-          </h2>
+
+        <div className="likeDislikeCounting">
+          <h3>
+            Like: {this.state.liked} / Dislike: {this.state.disliked}
+          </h3>
         </div>
 
         <div>
-          {this.state.fetching === true && "Quotes are loading..."}
+          {this.state.search === "" && "Typ a keyword to search for a Quote! "}
+          {this.state.fetching === true &&
+            this.state.search !== "" &&
+            "Quotes are loading..."}
           {this.state.fetching === false &&
             this.state.quotes.length === 0 &&
             "No quotes found with this keyword, try again with another keyword"}
