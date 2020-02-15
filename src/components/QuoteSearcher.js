@@ -5,6 +5,19 @@ export default class QuoteSearcher extends Component {
   state = {
     quotes: []
   };
+
+  componentDidMount() {
+    fetch("https://quote-garden.herokuapp.com/quotes/search/tree")
+      .then(response => response.json())
+      .then(data => {
+        console.log("fetching data", data);
+        const quotesTree = data.results.map(quote => quote);
+        this.setState({
+          quotes: quotesTree
+        });
+      });
+  }
+
   renderQuote = quote => {
     return (
       <Quote
