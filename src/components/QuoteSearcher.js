@@ -3,7 +3,8 @@ import Quote from "./Quote";
 
 export default class QuoteSearcher extends Component {
   state = {
-    quotes: []
+    quotes: [],
+    fetching: true
   };
 
   componentDidMount() {
@@ -13,7 +14,8 @@ export default class QuoteSearcher extends Component {
         console.log("fetching data", data);
         const quotesTree = data.results.map(quote => quote);
         this.setState({
-          quotes: quotesTree
+          quotes: quotesTree,
+          fetching: false
         });
       });
   }
@@ -32,7 +34,12 @@ export default class QuoteSearcher extends Component {
     return (
       <div className="quotes">
         <h1>Quotes ! </h1>
-        <div>{this.state.quotes.map(this.renderQuote)}</div>
+
+        <div>
+          {this.state.fetching === true && "Quotes are loading..."}
+          {this.state.fetching === false &&
+            this.state.quotes.map(this.renderQuote)}
+        </div>
       </div>
     );
   }
