@@ -17,7 +17,8 @@ export default class QuoteSearcher extends Component {
           quotes: quotesTree,
           fetching: false
         });
-      });
+      })
+      .catch(console.error);
   }
 
   renderQuote = quote => {
