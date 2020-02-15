@@ -7,6 +7,21 @@ export default class QuoteSearcher extends Component {
     fetching: true,
     search: ""
   };
+  componentDidMount() {
+    fetch(`https://quote-garden.herokuapp.com/quotes/search/tree`)
+      .then(response => response.json())
+      .then(data => {
+        console.log("fetching data", data);
+        const quotesTree = data.results.map(quote => quote);
+        this.setState({
+          quotes: quotesTree,
+          fetching: false,
+          liked: 0,
+          disliked: 0
+        });
+      })
+      .catch(console.error);
+  }
 
   search = () => {
     fetch(
@@ -23,7 +38,10 @@ export default class QuoteSearcher extends Component {
           disliked: 0
         });
       })
-      .catch(console.error);
+      .catch(error => {
+        console.log(error);
+        return this.setState({ fetching: false, quotes: [] });
+      });
   };
 
   renderQuote = quote => {
@@ -71,11 +89,10 @@ export default class QuoteSearcher extends Component {
         </div>
 
         <div>
-          {this.state.search === "" &&
-            "Type a (new) keyword to search for quotes"}
-          {this.state.fetching === true &&
-            this.state.search !== "" &&
-            "Quotes are loading..."}
+          {this.state.fetching === true && "Quotes are loading..."}
+          {this.state.fetching === false &&
+            this.state.quotes.length === 0 &&
+            "No quotes found with this keyword, try again with another keyword"}
           {this.state.fetching === false &&
             this.state.quotes.map(this.renderQuote)}
         </div>
